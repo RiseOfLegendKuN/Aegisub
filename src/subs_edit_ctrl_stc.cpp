@@ -107,6 +107,11 @@ SubsStyledTextEditCtrl::SubsStyledTextEditCtrl(wxWindow* parent, wxSize wsize, l
 	SetMarginWidth(1,0);
 	UsePopUp(false);
 	SetStyles();
+	
+	// Apply RTL mode from config if enabled
+	if (OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool()) {
+		SetLayoutDirection(wxLayout_RightToLeft);
+	}
 
 	// Set hotkeys
 	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_KEYMOD_CTRL);
@@ -171,6 +176,13 @@ SubsStyledTextEditCtrl::SubsStyledTextEditCtrl(wxWindow* parent, wxSize wsize, l
 	OPT_SUB("Colour/Subtitle/Background", &SubsStyledTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Highlight/Syntax", &SubsStyledTextEditCtrl::UpdateStyle, this);
 	OPT_SUB("App/Call Tips", &SubsStyledTextEditCtrl::UpdateCallTip, this);
+	OPT_SUB("Subtitle/Edit Box/RTL Mode", [this](agi::OptionValue const& opt) {
+		if (opt.GetBool())
+			SetLayoutDirection(wxLayout_RightToLeft);
+		else
+			SetLayoutDirection(wxLayout_LeftToRight);
+		Refresh();
+	});
 
 	Bind(wxEVT_MENU, [=](wxCommandEvent&) {
 		if (spellchecker) spellchecker->AddWord(currentWord);
@@ -602,11 +614,19 @@ void SubsStyledTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 }
 
 void SubsStyledTextEditCtrl::OnToggleRTL(wxCommandEvent &event) {
-	auto dir = GetLayoutDirection();
-	if (dir == wxLayout_RightToLeft)
-		SetLayoutDirection(wxLayout_LeftToRight);
-	else
+	// Get current RTL mode from config
+	bool current_rtl = OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool();
+	bool new_rtl = !current_rtl;
+	
+	// Update the config option
+	OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(new_rtl);
+	
+	// Apply layout direction to the control
+	if (new_rtl)
 		SetLayoutDirection(wxLayout_RightToLeft);
+	else
+		SetLayoutDirection(wxLayout_LeftToRight);
+		
 	Refresh();
 }
 
