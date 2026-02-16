@@ -513,20 +513,14 @@ public:
 		wxString str = Value(d, c);
 		int text_x = x + 4;
 		
-		// Apply RTL text layout if enabled
+		// Apply RTL text alignment if enabled
 		if (rtl_mode->GetBool()) {
 			// For RTL, align text to the right side of the cell
 			int str_width = dc.GetTextExtent(str).GetWidth();
 			text_x = x + width - str_width - 4;
-			dc.SetLayoutDirection(wxLayout_RightToLeft);
 		}
 		
 		dc.DrawText(str, text_x, y + 2);
-		
-		// Reset layout direction to default (LTR)
-		if (rtl_mode->GetBool()) {
-			dc.SetLayoutDirection(wxLayout_LeftToRight);
-		}
 	}
 };
 
