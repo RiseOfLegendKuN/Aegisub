@@ -1271,6 +1271,30 @@ struct edit_insert_original final : public Command {
 	}
 };
 
+struct edit_rtl_mode final : public Command {
+	CMD_NAME("edit/toggle_rtl_mode")
+	STR_DISP("Toggle RTL & LTR Mode")
+	STR_MENU("RTL & LTR Mode")
+	STR_HELP("Toggle between Right-to-Left and Left-to-Right text direction mode for the subtitle grid and editor")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
+
+	wxString StrMenu(const agi::Context *c) const override {
+		bool rtl_mode = OPT_GET("Subtitle/Grid/RTL Mode")->GetBool();
+		return rtl_mode ? _("Switch to &LTR Mode") : _("Switch to &RTL Mode");
+	}
+
+	wxString StrDisplay(const agi::Context *c) const override {
+		bool rtl_mode = OPT_GET("Subtitle/Grid/RTL Mode")->GetBool();
+		return rtl_mode ? _("Switch to LTR Mode") : _("Switch to RTL Mode");
+	}
+
+	void operator()(agi::Context *c) override {
+		bool current_mode = OPT_GET("Subtitle/Grid/RTL Mode")->GetBool();
+		OPT_SET("Subtitle/Grid/RTL Mode")->SetBool(!current_mode);
+		OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(!current_mode);
+	}
+};
+
 }
 
 namespace cmd {
@@ -1307,5 +1331,6 @@ namespace cmd {
 		reg(agi::make_unique<edit_insert_original>());
 		reg(agi::make_unique<edit_clear>());
 		reg(agi::make_unique<edit_clear_text>());
+		reg(agi::make_unique<edit_rtl_mode>());
 	}
 }
