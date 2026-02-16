@@ -511,16 +511,7 @@ public:
 
 	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const override {
 		wxString str = Value(d, c);
-		int text_x = x + 4;
-		
-		// Apply RTL text alignment if enabled
-		if (rtl_mode->GetBool()) {
-			// For RTL, align text to the right side of the cell
-			int str_width = dc.GetTextExtent(str).GetWidth();
-			text_x = x + width - str_width - 4;
-		}
-		
-		dc.DrawText(str, text_x, y + 2);
+		dc.DrawText(str, x + 4, y + 2);
 	}
 };
 
