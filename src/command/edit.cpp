@@ -1273,8 +1273,6 @@ struct edit_insert_original final : public Command {
 
 struct edit_rtl_mode final : public Command {
 	CMD_NAME("edit/toggle_rtl_mode")
-	STR_DISP("Toggle RTL & LTR Mode")
-	STR_MENU("RTL & LTR Mode")
 	STR_HELP("Toggle between Right-to-Left and Left-to-Right text direction mode for the subtitle grid and editor")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
