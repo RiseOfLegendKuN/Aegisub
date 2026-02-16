@@ -452,16 +452,21 @@ public:
 
 class GridColumnText final : public GridColumn {
 	const agi::OptionValue *override_mode;
+	const agi::OptionValue *rtl_mode;
 	wxString replace_char;
 
 	agi::signal::Connection replace_char_connection;
+	agi::signal::Connection rtl_mode_connection;
 
 public:
 	GridColumnText()
 	: override_mode(OPT_GET("Subtitle/Grid/Hide Overrides"))
+	, rtl_mode(OPT_GET("Subtitle/Grid/RTL Mode"))
 	, replace_char(to_wx(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString()))
 	, replace_char_connection(OPT_SUB("Subtitle/Grid/Hide Overrides Char",
 		[&](agi::OptionValue const& v) { replace_char = to_wx(v.GetString()); }))
+	, rtl_mode_connection(OPT_SUB("Subtitle/Grid/RTL Mode",
+		[](agi::OptionValue const&) { /* RTL mode changed, grid will refresh */ }))
 	{
 	}
 
@@ -502,6 +507,27 @@ public:
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return 5000;
+	}
+
+	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const override {
+		wxString str = Value(d, c);
+		int text_x = x + 4;
+		
+		// Apply RTL text layout if enabled
+		if (rtl_mode->GetBool()) {
+			// Set text layout to RTL
+			int flags = wxTextLayoutDirection::wxLayout_RightToLeft;
+			dc.SetLayoutDirection(flags);
+			
+			// For RTL, align text to the right side of the cell
+			int str_width = dc.GetTextExtent(str).GetWidth();
+			text_x = x + width - str_width - 4;
+		}
+		
+		dc.DrawText(str, text_x, y + 2);
+		
+		// Reset layout direction to default (LTR)
+		dc.SetLayoutDirection(wxTextLayoutDirection::wxLayout_Default);
 	}
 };
 
