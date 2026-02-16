@@ -69,6 +69,9 @@
 #include <wx/clipbrd.h>
 #include <wx/fontdlg.h>
 #include <wx/textentry.h>
+#include <wx/textctrl.h>
+#include <wx/stc/stc.h>
+#include <wx/scrolbar.h>
 
 namespace {
 	using namespace boost::adaptors;
@@ -1288,8 +1291,11 @@ struct edit_rtl_mode final : public Command {
 
 	void operator()(agi::Context *c) override {
 		bool current_mode = OPT_GET("Subtitle/Grid/RTL Mode")->GetBool();
-		OPT_SET("Subtitle/Grid/RTL Mode")->SetBool(!current_mode);
-		OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(!current_mode);
+		bool new_mode = !current_mode;
+		
+		// Update config options only - grid and editor rendering will automatically adjust
+		OPT_SET("Subtitle/Grid/RTL Mode")->SetBool(new_mode);
+		OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(new_mode);
 	}
 };
 
