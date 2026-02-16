@@ -89,10 +89,10 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 
 	UpdateStyle();
 	
-	// Apply RTL mode from config if enabled
-	if (OPT_GET("Subtitle/Grid/RTL Mode")->GetBool()) {
-		SetLayoutDirection(wxLayout_RightToLeft);
-	}
+	// Apply RTL mode from config
+	wxLayoutDirection initial_dir = OPT_GET("Subtitle/Grid/RTL Mode")->GetBool() ? 
+		wxLayout_RightToLeft : wxLayout_LeftToRight;
+	SetLayoutDirection(initial_dir);
 	
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 
@@ -121,7 +121,11 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 
 		OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this),
 		OPT_SUB("Subtitle/Grid/Hide Overrides", [&](agi::OptionValue const&) { Refresh(false); }),
-		OPT_SUB("Subtitle/Grid/RTL Mode", [&](agi::OptionValue const&) { Refresh(false); }),
+		OPT_SUB("Subtitle/Grid/RTL Mode", [&](agi::OptionValue const&) {
+			bool new_rtl = OPT_GET("Subtitle/Grid/RTL Mode")->GetBool();
+			SetLayoutDirection(new_rtl ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+			Refresh(false);
+		}),
 	});
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
