@@ -217,18 +217,18 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	// Text editor
 #ifdef WITH_WXSTC
 	if (use_stc) {
-		edit_ctrl_stc = new SubsStyledTextEditCtrl(this, wxDefaultSize, (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN), c);
+		edit_ctrl_stc = new SubsStyledTextEditCtrl(this, FromDIP(wxSize(300,50)), (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN), c);
 		edit_ctrl_stc->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
-		edit_ctrl_stc->SetInitialSize(wxSize(400, 100));
+		edit_ctrl_stc->SetInitialSize(FromDIP(wxSize(300,50)));
 		main_sizer->Add(edit_ctrl_stc, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 3));
 		edit_ctrl_stc->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChangeStc, this);
 		edit_ctrl_stc->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT | wxSTC_STARTACTION);
 		context->textSelectionController->SetControl(edit_ctrl_stc);
 		edit_ctrl_stc->SetFocus();
 	} else {
-		edit_ctrl_tc = new SubsTextEditCtrl(this, wxDefaultSize, (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN), c);
+		edit_ctrl_tc = new SubsTextEditCtrl(this, FromDIP(wxSize(300,50)), (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN), c);
 		edit_ctrl_tc->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
-		edit_ctrl_tc->SetInitialSize(wxSize(400, 100));
+		edit_ctrl_tc->SetInitialSize(FromDIP(wxSize(300,50)));
 		main_sizer->Add(edit_ctrl_tc, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 3));
 		edit_ctrl_tc->Bind(wxEVT_TEXT, &SubsEditBox::OnChangeTc, this);
 		// Bind the native wxTextCtrl to the TextSelectionController so selection
@@ -237,16 +237,16 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 		edit_ctrl_tc->SetFocus();
 	}
 #else
-	edit_ctrl_tc = new SubsTextEditCtrl(this, wxDefaultSize, (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN), c);
+	edit_ctrl_tc = new SubsTextEditCtrl(this, FromDIP(wxSize(300,50)), (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN), c);
 	edit_ctrl_tc->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
-	edit_ctrl_tc->SetInitialSize(wxSize(400, 100));
+	edit_ctrl_tc->SetInitialSize(FromDIP(wxSize(300,50)));
 	main_sizer->Add(edit_ctrl_tc, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 3));
 	edit_ctrl_tc->Bind(wxEVT_TEXT, &SubsEditBox::OnChangeTc, this);
 	context->textSelectionController->SetControl(edit_ctrl_tc);
 	edit_ctrl_tc->SetFocus();
 #endif
 
-	secondary_editor = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN) | wxTE_MULTILINE | wxTE_READONLY);
+	secondary_editor = new wxTextCtrl(this, -1, "", wxDefaultPosition, FromDIP(wxSize(300,50)), (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN) | wxTE_MULTILINE | wxTE_READONLY);
 	// Here we use the height of secondary_editor as the initial size of edit_ctrl,
 	// which is more reasonable than the default given by wxWidgets.
 	// See: https://trac.wxwidgets.org/ticket/18471#ticket
