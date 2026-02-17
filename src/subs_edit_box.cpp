@@ -247,6 +247,11 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 #endif
 
 	secondary_editor = new wxTextCtrl(this, -1, "", wxDefaultPosition, FromDIP(wxSize(300,50)), (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN) | wxTE_MULTILINE | wxTE_READONLY);
+	// Apply dark mode colors if enabled
+	if (OPT_GET("App/Dark Mode")->GetBool()) {
+		secondary_editor->SetBackgroundColour(wxColour(30, 30, 30));  // Dark gray
+		secondary_editor->SetForegroundColour(wxColour(220, 220, 220));  // Light gray
+	}
 	// Here we use the height of secondary_editor as the initial size of edit_ctrl,
 	// which is more reasonable than the default given by wxWidgets.
 	// See: https://trac.wxwidgets.org/ticket/18471#ticket
