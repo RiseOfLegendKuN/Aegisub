@@ -265,7 +265,13 @@ void SubsStyledTextEditCtrl::SetStyles() {
 	if (!fontname.empty()) font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 
-	auto default_background = to_wx(OPT_GET("Colour/Subtitle/Background")->GetColor());
+	// In dark mode, use dark background; otherwise use configured color
+	wxColour default_background;
+	if (OPT_GET("App/Dark Mode")->GetBool()) {
+		default_background = wxColour(30, 30, 30);  // Dark gray
+	} else {
+		default_background = to_wx(OPT_GET("Colour/Subtitle/Background")->GetColor());
+	}
 
 	namespace ss = agi::ass::SyntaxStyle;
 	SetSyntaxStyle(ss::NORMAL, font, "Normal", default_background);
