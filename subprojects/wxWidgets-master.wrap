@@ -1,7 +1,7 @@
 [wrap-git]
 directory = wxWidgets-master
 url = https://github.com/wxWidgets/wxWidgets.git
-revision = v3.3.1
+revision = v3.3.0
 clone-recursive = true
 depth = 1
 diff_files = wxWidgets-master/0001.patch

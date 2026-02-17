@@ -6,6 +6,7 @@ on:
       - master
       - feature
       - cibuilds
+      - dev
   pull_request:
     branches:
       - master
@@ -21,30 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: Windows MSVC Release
-            os: windows-latest
-            msvc: true
-            buildtype: release
-            args: >-
-              -Ddefault_library=static 
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
-              -Dfallback_nasm=true
-              -Dfreetype2:harfbuzz=disabled 
-              -Dharfbuzz:freetype=disabled 
-              -Dharfbuzz:cairo=disabled 
-              -Dharfbuzz:glib=disabled 
-              -Dharfbuzz:gobject=disabled
-              -Dharfbuzz:tests=disabled
-              -Dharfbuzz:docs=disabled
-              -Dharfbuzz:icu=disabled
-              -Dfribidi:tests=false
-              -Dfribidi:docs=false
-              -Dlibass:fontconfig=disabled
-              -Dffmpeg:libdav1d=enabled
-              -Davisynth=enabled
-              -Dbestsource=enabled
-              -Dvapoursynth=enabled
-              -Dwxstc=enabled
           - name: Windows MSVC Release (wx master)
             os: windows-latest
             msvc: true
@@ -69,7 +46,7 @@ jobs:
               -Dbestsource=enabled
               -Dvapoursynth=enabled
               -Dwxstc=enabled
-              -Dwx_version='3.3.1'
+              -Dwx_version='3.3.0'
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
