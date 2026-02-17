@@ -110,10 +110,19 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Bind(wxEVT_MENU, bind(&SubsTextEditCtrl::OnUseSuggestion, this, std::placeholders::_1), EDIT_MENU_THESAURUS_SUGS, EDIT_MENU_THESAURUS_SUGS+LANGS_MAX);
 	Bind(wxEVT_MENU, &SubsTextEditCtrl::OnSetThesLanguage, this, EDIT_MENU_THES_LANGS, EDIT_MENU_THES_LANGS+LANGS_MAX);
 
+	// Initialize RTL mode from config
+	if (OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool()) {
+		SetLayoutDirection(wxLayout_RightToLeft);
+	}
+
 	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Colour/Subtitle/Background", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Colour/Subtitle/Syntax/Normal", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Subtitle/Edit Box/RTL Mode", [this](agi::OptionValue const& opt) {
+		SetLayoutDirection(opt.GetBool() ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+		Refresh();
+	});
 }
 
 SubsTextEditCtrl::~SubsTextEditCtrl() {
