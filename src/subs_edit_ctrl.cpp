@@ -153,8 +153,14 @@ void SubsTextEditCtrl::SetStyles() {
 	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 	SetFont(font);
 
-	SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Background")->GetColor()));
-	SetForegroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Normal")->GetColor()));
+	// In dark mode, use dark background; otherwise use configured color
+	if (OPT_GET("App/Dark Mode")->GetBool()) {
+		SetBackgroundColour(wxColour(30, 30, 30));  // Dark gray
+		SetForegroundColour(wxColour(220, 220, 220));  // Light gray for text
+	} else {
+		SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Background")->GetColor()));
+		SetForegroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Normal")->GetColor()));
+	}
 }
 
 void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent& event) {
