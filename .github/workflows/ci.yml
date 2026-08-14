@@ -38,6 +38,7 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
+              -Dwxstc=enabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -47,32 +48,31 @@ jobs:
             name: Ubuntu Debug,
             os: ubuntu-latest,
             buildtype: debugoptimized,
-            args: -Db_pch=false
+            args: -Db_pch=false -Dwxstc=enabled
           }
           - {
             name: Ubuntu Release,
             os: ubuntu-latest,
             buildtype: release,
-            args: -Db_pch=false
+            args: -Db_pch=false -Dwxstc=enabled
           }
-          - {
-            name: Ubuntu AppImage,
-            os: ubuntu-latest,
-            buildtype: release,
-            args: -Db_pch=false,
+          - name: Ubuntu AppImage
+            os: ubuntu-latest
+            buildtype: release
             appimage: true
-          }
+            args: >-
+              -Dwxstc=enabled
           - {
             name: macOS x86_64 Debug,
             os: macos-15-intel,
             buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
+            args: -Ddefault_library=static -Dwxstc=enabled -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS x86_64 Release,
             os: macos-15-intel,
             buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
+            args: -Ddefault_library=static -Dwxstc=enabled -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS arm64 Debug,
