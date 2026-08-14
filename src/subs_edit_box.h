@@ -34,7 +34,6 @@
 
 #include <wx/combobox.h>
 #include <wx/panel.h>
-#include <wx/stc/stc.h>
 #include <wx/timer.h>
 
 #include <libaegisub/signal.h>
