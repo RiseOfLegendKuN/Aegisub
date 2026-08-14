@@ -37,6 +37,10 @@
 #include <wx/stc/stc.h>
 #include <wx/timer.h>
 
+#ifdef WITH_WXSTC
+#include "subs_edit_ctrl_stc.h"
+#endif
+
 #include <libaegisub/signal.h>
 
 namespace agi { namespace vfr { class Framerate; } }
