@@ -47,12 +47,8 @@
 #include "options.h"
 #include "placeholder_ctrl.h"
 #include "project.h"
-#include "retina_helper.h"
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
-#ifdef WITH_WXSTC
-#include "subs_edit_ctrl_stc.h"
-#endif
 #include "text_selection_controller.h"
 #include "timeedit_ctrl.h"
 #include "tooltip_manager.h"

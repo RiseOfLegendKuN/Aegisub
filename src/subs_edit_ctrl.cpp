@@ -43,7 +43,6 @@
 
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/character_count.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/spellchecker.h>
 
 #include <boost/algorithm/string/replace.hpp>
