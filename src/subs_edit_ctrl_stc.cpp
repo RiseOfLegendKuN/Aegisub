@@ -619,19 +619,10 @@ void SubsStyledTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 }
 
 void SubsStyledTextEditCtrl::OnToggleRTL(wxCommandEvent &event) {
-	// Get current RTL mode from config
 	bool current_rtl = OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool();
 	bool new_rtl = !current_rtl;
-	
-	// Update the config option
 	OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(new_rtl);
-	
-	// Apply layout direction to the control
-	if (new_rtl)
-		SetLayoutDirection(wxLayout_RightToLeft);
-	else
-		SetLayoutDirection(wxLayout_LeftToRight);
-		
+	SetLayoutDirection(new_rtl ? wxLayout_RightToLeft : wxLayout_LeftToRight);
 	Refresh();
 }
 

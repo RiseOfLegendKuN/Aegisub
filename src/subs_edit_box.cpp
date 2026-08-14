@@ -520,8 +520,11 @@ void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 #endif
 
 		if (active_ctrl) {
-			wxLayoutDirection cur = active_ctrl->GetLayoutDirection();
-			wxLayoutDirection next = (cur == wxLayout_RightToLeft) ? wxLayout_LeftToRight : wxLayout_RightToLeft;
+			bool current_rtl = OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool();
+			bool new_rtl = !current_rtl;
+			OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(new_rtl);
+
+			wxLayoutDirection next = new_rtl ? wxLayout_RightToLeft : wxLayout_LeftToRight;
 			active_ctrl->SetLayoutDirection(next);
 			if (secondary_editor) secondary_editor->SetLayoutDirection(next);
 
@@ -529,7 +532,6 @@ void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 				stc->SetViewEOL(false); // trigger minimal refresh
 			}
 
-			// consume the event
 			event.Skip(false);
 			return;
 		}
