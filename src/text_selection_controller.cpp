@@ -16,6 +16,9 @@
 
 #include "text_selection_controller.h"
 
+#include <wx/event.h>
+#include <wx/textctrl.h>
+
 #ifdef WITH_WXSTC
 #include <wx/stc/stc.h>
 #endif
