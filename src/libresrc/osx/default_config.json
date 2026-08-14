@@ -1,0 +1,19 @@
+{
+    "Audio" : {
+        "Karaoke" : {
+            "Font Face" : ""
+        }
+    },
+    "Subtitle" : {
+        "Edit Box" : {
+            "Font Size" : 13,
+            "RTL Mode" : false
+        },
+        "Grid" : {
+            "Font Face" : "",
+            "Font Size" : 12,
+			"RTL Mode" : false
+        },
+		"Use STC" : true
+    }
+}
