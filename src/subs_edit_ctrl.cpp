@@ -561,9 +561,9 @@ void SubsTextEditCtrl::UpdateSyntaxHighlight() {
 
 
 void SubsTextEditCtrl::OnToggleRTL(wxCommandEvent &event) {
-	bool current_rtl = OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool();
-	bool new_rtl = !current_rtl;
-	OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(new_rtl);
-	SetLayoutDirection(new_rtl ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+	wxLayoutDirection cur = GetLayoutDirection();
+	wxLayoutDirection next = (cur == wxLayout_RightToLeft) ? wxLayout_LeftToRight : wxLayout_RightToLeft;
+	SetLayoutDirection(next);
+	// Also update caret/selection behavior by refreshing control
 	Refresh();
 }

@@ -372,7 +372,7 @@ void SubsStyledTextEditCtrl::SetTextTo(std::string const& text) {
 	auto insertion_point = GetInsertionPoint();
 	if (static_cast<size_t>(insertion_point) > line_text.size())
 		line_text = GetTextRaw().data();
-	auto old_pos = agi::CharacterCount(std::string_view(line_text).substr(0, insertion_point), 0);
+	auto old_pos = agi::CharacterCount(line_text.begin(), line_text.begin() + insertion_point, 0);
 	line_text.clear();
 
 	if (context) {
@@ -619,10 +619,19 @@ void SubsStyledTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 }
 
 void SubsStyledTextEditCtrl::OnToggleRTL(wxCommandEvent &event) {
+	// Get current RTL mode from config
 	bool current_rtl = OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool();
 	bool new_rtl = !current_rtl;
+	
+	// Update the config option
 	OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(new_rtl);
-	SetLayoutDirection(new_rtl ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+	
+	// Apply layout direction to the control
+	if (new_rtl)
+		SetLayoutDirection(wxLayout_RightToLeft);
+	else
+		SetLayoutDirection(wxLayout_LeftToRight);
+		
 	Refresh();
 }
 
