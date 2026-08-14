@@ -372,7 +372,10 @@ void SubsStyledTextEditCtrl::SetTextTo(std::string const& text) {
 	auto insertion_point = GetInsertionPoint();
 	if (static_cast<size_t>(insertion_point) > line_text.size())
 		line_text = GetTextRaw().data();
-	auto old_pos = agi::CharacterCount(line_text.begin(), line_text.begin() + insertion_point, 0);
+
+	std::string_view line_view(line_text);
+	size_t clamp_pos = std::min<size_t>(line_view.size(), static_cast<size_t>(std::max<int>(0, insertion_point)));
+	auto old_pos = agi::CharacterCount(line_view.substr(0, clamp_pos), 0);
 	line_text.clear();
 
 	if (context) {

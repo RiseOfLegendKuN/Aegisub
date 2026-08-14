@@ -10,6 +10,7 @@ param (
 $lastSvnRevision = 6962
 $lastSvnHash = '16cd907fe7482cb54a7374cd28b8501f138116be'
 $defineNumberMatch = [regex] '^#define\s+(\w+)\s+(\d+)$'
+$defineResourceBaseVersionMatch = [regex] '^#define\s+RESOURCE_BASE_VERSION\s*\(?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)?\s*$'
 $defineStringMatch = [regex] "^#define\s+(\w+)\s+[`"']?(.+?)[`"']?$"
 $semVerMatch = [regex] 'v?(\d+)\.(\d+).(\d+)(?:-(\w+))?'
 
@@ -37,11 +38,16 @@ $version = @{
 if (Test-Path $gitVersionHeaderPath) {
   Get-Content $gitVersionHeaderPath | %{$_.Trim()} | ?{$_} | %{
     switch -regex ($_) {
+      $defineResourceBaseVersionMatch {
+        $version['RESOURCE_BASE_VERSION'] = @([int]$Matches[1], [int]$Matches[2], [int]$Matches[3])
+      }
       $defineNumberMatch {
-        $version[$Matches[1]] = [int]$Matches[2];
+        $version[$Matches[1]] = [int]$Matches[2]
       }
       $defineStringMatch {
-        $version[$Matches[1]] = $Matches[2];
+        if ($Matches[1] -ne 'RESOURCE_BASE_VERSION') {
+          $version[$Matches[1]] = $Matches[2]
+        }
       }
     }
   }
