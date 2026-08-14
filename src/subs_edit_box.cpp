@@ -60,7 +60,6 @@
 #include "validators.h"
 
 #include <libaegisub/character_count.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <functional>
@@ -110,7 +109,7 @@ const auto AssDialogue_Effect = &AssDialogue::Effect;
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_STATIC : wxRAISED_BORDER), "SubsEditBox")
 , c(context)
-, retina_helper(agi::make_unique<RetinaHelper>(parent))
+, retina_helper(std::make_unique<RetinaHelper>(parent))
 , undo_timer(GetEventHandler())
 #ifdef WITH_WXSTC
 , use_stc(OPT_GET("Subtitle/Use STC")->GetBool())

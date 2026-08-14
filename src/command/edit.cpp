@@ -1335,6 +1335,6 @@ namespace cmd {
 		reg(std::make_unique<edit_insert_original>());
 		reg(std::make_unique<edit_clear>());
 		reg(std::make_unique<edit_clear_text>());
-		reg(agi::make_unique<edit_rtl_mode>());
+		reg(std::make_unique<edit_rtl_mode>());
 	}
 }

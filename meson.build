@@ -432,6 +432,12 @@ endforeach
 aegisub_order_dep = []
 aegisub_defines = []
 
+if not get_option('wxstc').disabled()
+    conf.set('WITH_WXSTC', 1)
+elif get_option('wxstc').enabled()
+    error('wxstc enabled but wxWidgets stc module not available')
+endif
+
 if get_option('b_pch')
     # Write the feature flags into a configure_file to not bloat the compiler args too much
     aegisub_order_dep += configure_file(output: 'acconf.h', configuration: conf)

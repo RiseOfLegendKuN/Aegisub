@@ -76,7 +76,7 @@ enum {
 
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context* context)
 	: wxTextCtrl(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wsize, style | wxTE_MULTILINE)
-	, thesaurus(agi::make_unique<Thesaurus>())
+	, thesaurus(std::make_unique<Thesaurus>())
 	, spellchecker(SpellCheckerFactory::GetSpellChecker())
 	, context(context)
 {
