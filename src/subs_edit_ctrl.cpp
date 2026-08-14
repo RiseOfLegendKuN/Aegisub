@@ -48,6 +48,9 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
+#include <wx/menu.h>
+#include <wx/settings.h>
+
 // Maximum number of languages (locales)
 #define LANGS_MAX 1000
 
@@ -245,13 +248,14 @@ void SubsTextEditCtrl::SetTextTo(std::string const& text) {
 	// Get current value as std::string
 	wxCharBuffer curbuf = GetValue().utf8_str();
 	std::string cur = curbuf.data() ? std::string(curbuf.data(), curbuf.length()) : std::string();
+	std::string_view cur_view(cur);
 
 	if (static_cast<size_t>(insertion_point) > cur.size())
 		; // nothing to do, cur is up-to-date
 
 	// Compute old character index (clamped)
 	size_t clamp_pos = std::min<size_t>(cur.size(), static_cast<size_t>(std::max<long>(0, insertion_point)));
-	size_t old_pos = agi::CharacterCount(cur.begin(), cur.begin() + clamp_pos, 0);
+	size_t old_pos = agi::CharacterCount(cur_view.substr(0, clamp_pos), 0);
 
 	if (context) {
 		context->textSelectionController->SetSelection(0, 0);
@@ -509,8 +513,9 @@ void SubsTextEditCtrl::UpdateSyntaxHighlight() {
 		end_byte = std::min(end_byte, line_text.size());
 
 		// Convert to character indices
-		size_t start_char = agi::CharacterCount(line_text.begin(), line_text.begin() + start_byte, 0);
-		size_t end_char = agi::CharacterCount(line_text.begin(), line_text.begin() + end_byte, 0);
+		std::string_view line_view(line_text);
+		size_t start_char = agi::CharacterCount(line_view.substr(0, start_byte), 0);
+		size_t end_char = agi::CharacterCount(line_view.substr(0, end_byte), 0);
 		size_t char_len = end_char - start_char;
 
 		wxColour color;

@@ -47,6 +47,7 @@ class RetinaHelper;
 class SubsTextEditCtrl;
 class SubsStyledTextEditCtrl;
 class TimeEdit;
+class ToolTipBinding;
 class wxButton;
 class wxCheckBox;
 class wxRadioButton;
@@ -105,6 +106,7 @@ class SubsEditBox final : public wxPanel {
 	wxSizer *bottom_sizer;
 
 	std::unique_ptr<RetinaHelper> retina_helper;
+	std::vector<std::unique_ptr<ToolTipBinding>> tool_tip_bindings;
 
 	void SetControlsState(bool state);
 	/// @brief Update times of selected lines

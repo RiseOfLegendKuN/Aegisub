@@ -51,7 +51,7 @@
 #include "subs_edit_ctrl.h"
 #include "text_selection_controller.h"
 #include "timeedit_ctrl.h"
-#include "tooltip_manager.h"
+#include "tooltip_binding.h"
 #include "utils.h"
 #include "validators.h"
 
@@ -329,7 +329,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 void SubsEditBox::MakeButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(OPT_GET("App/Toolbar Icon Size")->GetInt(), retina_helper->GetScaleFactor()));
-	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+	tool_tip_bindings.emplace_back(std::make_unique<ToolTipBinding>(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name));
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Expand());
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
@@ -338,7 +338,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxButton *btn = new wxButton(this, -1, command->StrDisplay(c));
-	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+	tool_tip_bindings.emplace_back(std::make_unique<ToolTipBinding>(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name));
 
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 	return btn;

@@ -143,6 +143,7 @@ aegisub_src += files(
     'toggle_bitmap.cpp',
     'toolbar.cpp',
     'tooltip_binding.cpp',
+    'tooltip_manager.cpp',
     'utils.cpp',
     'validators.cpp',
     'vector2d.cpp',
