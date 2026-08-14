@@ -6,13 +6,11 @@
     },
     "Subtitle" : {
         "Edit Box" : {
-            "Font Size" : 13,
-            "RTL Mode" : false
+            "Font Size" : 13
         },
         "Grid" : {
             "Font Face" : "",
-            "Font Size" : 12,
-			"RTL Mode" : false
+            "Font Size" : 12
         },
 		"Use STC" : true
     }
