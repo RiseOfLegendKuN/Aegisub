@@ -69,6 +69,9 @@
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#ifdef WITH_WXSTC
+#include <wx/stc/stc.h>
+#endif
 
 namespace {
 
@@ -105,7 +108,6 @@ const auto AssDialogue_Effect = &AssDialogue::Effect;
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | (OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_STATIC : wxRAISED_BORDER), "SubsEditBox")
 , c(context)
-, retina_helper(std::make_unique<RetinaHelper>(parent))
 , undo_timer(GetEventHandler())
 #ifdef WITH_WXSTC
 , use_stc(OPT_GET("Subtitle/Use STC")->GetBool())
@@ -328,7 +330,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 
 void SubsEditBox::MakeButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
-	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(OPT_GET("App/Toolbar Icon Size")->GetInt(), retina_helper->GetScaleFactor()));
+	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(OPT_GET("App/Toolbar Icon Size")->GetInt()));
 	tool_tip_bindings.emplace_back(std::make_unique<ToolTipBinding>(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name));
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Expand());

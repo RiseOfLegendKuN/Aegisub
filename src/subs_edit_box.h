@@ -43,7 +43,6 @@ namespace agi { struct Context; }
 namespace agi { class Time; }
 class AssDialogue;
 class AssStyle;
-class RetinaHelper;
 class SubsTextEditCtrl;
 class SubsStyledTextEditCtrl;
 class TimeEdit;
@@ -105,7 +104,6 @@ class SubsEditBox final : public wxPanel {
 	wxSizer *middle_left_sizer;
 	wxSizer *bottom_sizer;
 
-	std::unique_ptr<RetinaHelper> retina_helper;
 	std::vector<std::unique_ptr<ToolTipBinding>> tool_tip_bindings;
 
 	void SetControlsState(bool state);
