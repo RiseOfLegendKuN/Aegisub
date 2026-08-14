@@ -72,6 +72,9 @@
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#ifdef WITH_WXSTC
+#include <wx/stc/stc.h>
+#endif
 
 namespace {
 
