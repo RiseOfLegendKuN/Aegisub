@@ -176,7 +176,7 @@ jobs:
           set -e
           appdir="$GITHUB_WORKSPACE/appimage"
           rm -rf "$appdir"
-          mkdir -p "$appdir/usr/bin" "$appdir/usr/share/applications" "$appdir/usr/share/icons/hicolor/256x256/apps"
+          mkdir -p "$appdir/usr/bin" "$appdir/usr/share/applications" "$appdir/usr/share/pixmaps"
 
           cp build/aegisub "$appdir/usr/bin/aegisub"
           chmod +x "$appdir/usr/bin/aegisub"
@@ -186,10 +186,14 @@ jobs:
             cp "$desktop_file" "$appdir/usr/share/applications/"
           fi
 
-          icon_file=$(find packages/desktop -name '*.png' | head -n 1)
-          if [ -n "$icon_file" ]; then
-            mkdir -p "$appdir/usr/share/icons/hicolor/256x256/apps"
-            cp "$icon_file" "$appdir/usr/share/icons/hicolor/256x256/apps/aegisub.png"
+          icon_name=$(grep '^Icon=' "$desktop_file" | cut -d= -f2- | tr -d '\r')
+          icon_src=$(find packages/desktop -path '*/aegisub.png' | head -n 1)
+          if [ -n "$icon_src" ]; then
+            for size in 16 22 24 32 48 64 128 256; do
+              mkdir -p "$appdir/usr/share/icons/hicolor/${size}x${size}/apps"
+              cp "$icon_src" "$appdir/usr/share/icons/hicolor/${size}x${size}/apps/${icon_name}.png"
+            done
+            cp "$icon_src" "$appdir/usr/share/pixmaps/${icon_name}.png"
           fi
 
           if [ ! -f "$appdir/usr/share/applications"/*.desktop ]; then
@@ -200,7 +204,7 @@ jobs:
           /tmp/linuxdeploy.AppImage --appdir "$appdir" \
             -e "$appdir/usr/bin/aegisub" \
             -d "$appdir/usr/share/applications"/*.desktop \
-            -i "$appdir/usr/share/icons/hicolor/256x256/apps/aegisub.png" \
+            -i "$appdir/usr/share/icons/hicolor/256x256/apps/${icon_name}.png" \
             --output appimage
 
           appimage_path=$(find . -maxdepth 1 -name '*.AppImage' | head -n 1)
