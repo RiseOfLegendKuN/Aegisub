@@ -39,17 +39,13 @@
 #include "thesaurus.h"
 #include "utils.h"
 #include "format.h"
-#include "ass_dialogue.h"
 
-#include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/character_count.h>
 #include <libaegisub/spellchecker.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <functional>
-#include <string_view>
 
 #include <wx/menu.h>
 #include <wx/settings.h>
@@ -105,11 +101,6 @@ SubsNativeTextEditCtrl::SubsNativeTextEditCtrl(wxWindow* parent, wxSize wsize, l
 	Bind(wxEVT_CONTEXT_MENU, &SubsNativeTextEditCtrl::OnContextMenu, this);
 	// Bind RTL toggle so native mode has an explicit toggle
 	Bind(wxEVT_MENU, &SubsNativeTextEditCtrl::OnToggleRTL, this, EDIT_MENU_RTL);
-	// Bind text update for syntax highlighting
-	Bind(wxEVT_TEXT, [this](wxCommandEvent& event) {
-		UpdateSyntaxHighlight();
-		event.Skip();
-	});
 	// Bind spell checker suggestion handlers
 	Bind(wxEVT_MENU, bind(&SubsNativeTextEditCtrl::OnUseSuggestion, this, std::placeholders::_1), EDIT_MENU_SUGGESTIONS, EDIT_MENU_SUGGESTIONS+LANGS_MAX);
 	Bind(wxEVT_MENU, &SubsNativeTextEditCtrl::OnAddToDict, this, EDIT_MENU_ADD_TO_DICT);
@@ -482,90 +473,6 @@ void SubsNativeTextEditCtrl::OnRemoveFromDict(wxCommandEvent &event) {
 	if (spellchecker)
 		spellchecker->RemoveWord(currentWord);
 }
-
-void SubsNativeTextEditCtrl::UpdateSyntaxHighlight() {
-	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
-		return;
-	}
-
-	wxString textValue = GetValue();
-	std::string line_text = std::string(textValue.utf8_str().data());
-
-	// Reset whole control to normal text color first (clears previous styling)
-	wxTextAttr defaultAttr;
-	defaultAttr.SetTextColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Normal")->GetColor()));
-	SetStyle(0, GetLastPosition(), defaultAttr);
-
-	if (line_text.empty()) return;
-
-	// Tokenize the line for syntax analysis
-	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : nullptr;
-	bool template_line = diag && diag->Comment && (boost::istarts_with(diag->Effect.get(), "template") || boost::istarts_with(diag->Effect.get(), "mixin"));
-
-	auto tokenized_line = agi::ass::TokenizeDialogueBody(line_text, template_line);
-	agi::ass::SplitWords(line_text, tokenized_line);
-
-	// Apply syntax highlighting colors
-	// Note: agi::ass::SyntaxHighlight returns ranges measured in bytes (UTF-8),
-	// but wxTextCtrl::SetStyle expects character indices. Convert byte offsets
-	// to character indices using agi::CharacterCount.
-	size_t byte_pos = 0;
-	for (auto const& style_range : agi::ass::SyntaxHighlight(line_text, tokenized_line, spellchecker.get())) {
-		// Compute byte range
-		size_t start_byte = byte_pos;
-		size_t end_byte = byte_pos + style_range.length;
-
-		// Clamp to valid range
-		if (start_byte >= line_text.size()) break;
-		end_byte = std::min(end_byte, line_text.size());
-
-		// Convert to character indices
-		std::string_view line_view(line_text);
-		size_t start_char = agi::CharacterCount(line_view.substr(0, start_byte), 0);
-		size_t end_char = agi::CharacterCount(line_view.substr(0, end_byte), 0);
-		size_t char_len = end_char - start_char;
-
-		wxColour color;
-		bool apply = true;
-
-		// Map syntax style types to colors with defensive fallbacks
-		if (style_range.type == agi::ass::SyntaxStyle::TAG) {
-			auto opt = OPT_GET("Colour/Subtitle/Syntax/Tags");
-			color = opt ? to_wx(opt->GetColor()) : wxColour(200, 200, 200);
-		}
-		else if (style_range.type == agi::ass::SyntaxStyle::OVERRIDE) {
-			auto opt = OPT_GET("Colour/Subtitle/Syntax/Brackets");
-			color = opt ? to_wx(opt->GetColor()) : wxColour(200, 200, 200);
-		}
-		else if (style_range.type == agi::ass::SyntaxStyle::PUNCTUATION) {
-			auto opt = OPT_GET("Colour/Subtitle/Syntax/Slashes");
-			color = opt ? to_wx(opt->GetColor()) : wxColour(200, 200, 200);
-		}
-		else if (style_range.type == agi::ass::SyntaxStyle::PARAMETER) {
-			auto opt = OPT_GET("Colour/Subtitle/Syntax/Parameters");
-			color = opt ? to_wx(opt->GetColor()) : wxColour(200, 200, 200);
-		}
-		else if (style_range.type == agi::ass::SyntaxStyle::ERROR) {
-			auto opt = OPT_GET("Colour/Subtitle/Syntax/Error");
-			color = opt ? to_wx(opt->GetColor()) : *wxRED;
-		}
-		else if (style_range.type == agi::ass::SyntaxStyle::SPELLING) {
-			color = *wxRED;
-		}
-		else {
-			apply = false;
-		}
-
-		if (apply && char_len > 0) {
-			wxTextAttr attr;
-			attr.SetTextColour(color);
-			SetStyle((long)start_char, (long)(start_char + char_len), attr);
-		}
-
-		byte_pos = end_byte;
-	}
-}
-
 
 void SubsNativeTextEditCtrl::OnToggleRTL(wxCommandEvent &) {
 	OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(!OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool());

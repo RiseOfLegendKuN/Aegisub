@@ -70,7 +70,6 @@ class SubsNativeTextEditCtrl final : public wxTextCtrl, private agi::signal::Con
 	void OnKeyDown(wxKeyEvent &event);
 
 	void SetStyles();
-	void UpdateSyntaxHighlight();
 
 	/// Add the spell checker suggestions to a menu
 	void AddSpellCheckerEntries(wxMenu &menu);
