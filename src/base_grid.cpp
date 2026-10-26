@@ -54,6 +54,8 @@
 #include <wx/menu.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
+#include <wx/stc/stc.h>
 
 // Check menu.h for id range allocation before editing this enum
 enum {
